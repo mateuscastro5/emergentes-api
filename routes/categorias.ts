@@ -54,11 +54,13 @@ router.post("/", async (req, res) => {
     return
   }
 
+  const { nome } = validacao.data
+
   try {
-    const categoria = await prisma.categoria.create({
-      data: validacao.data
+    const novaCategoria = await prisma.categoria.create({
+      data: { nome }
     })
-    res.status(201).json(categoria)
+    res.status(201).json(novaCategoria)
   } catch (error) {
     res.status(500).json({ erro: error })
   }

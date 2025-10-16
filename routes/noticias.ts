@@ -150,23 +150,19 @@ router.post("/", async (req, res) => {
     return
   }
 
-  const { titulo, resumo, conteudo, imagemUrl, autor, categoria_id, cliente_id, status } = req.body
+  const { titulo, resumo, conteudo, imagemUrl, autor, categoria_id, cliente_id } = validacao.data
 
   try {
     const novaNoticia = await prisma.noticia.create({
       data: {
-        status: status as string,
-        ...(titulo && { titulo }),
-        ...(resumo && { resumo }),
-        ...(conteudo && { conteudo }),
-        ...(imagemUrl && { imagemUrl }),
-        ...(autor && { autor }),
-        ...(categoria_id && { 
-          categoria: {
-            connect: { id: Number(categoria_id) }
-          }
-        }),
-        ...(cliente_id && { cliente_id: cliente_id as string }),
+        titulo,
+        resumo,
+        conteudo,
+        imagemUrl,
+        autor,
+        categoria_id,
+        cliente_id,
+        status: "pendente"
       }
     })
     res.status(201).json(novaNoticia)

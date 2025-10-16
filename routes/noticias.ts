@@ -155,11 +155,11 @@ router.post("/", async (req, res) => {
   try {
     const novaNoticia = await prisma.noticia.create({
       data: {
-        titulo,
-        resumo,
-        conteudo,
-        imagemUrl,
-        autor,
+        titulo: titulo,
+        resumo: resumo,
+        conteudo: conteudo,
+        imagemUrl: imagemUrl,
+        autor: autor,
         status: "pendente",
         categoria: {
           connect: { id: categoria_id }

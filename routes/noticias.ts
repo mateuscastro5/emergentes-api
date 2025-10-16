@@ -165,7 +165,7 @@ router.post("/", async (req, res) => {
         cliente: {
           connect: { id: validacao.data.cliente_id }
         }
-      } as unknown as Prisma.NoticiaUncheckedCreateInput
+      }
     })
     res.status(201).json(novaNoticia)
   } catch (error) {

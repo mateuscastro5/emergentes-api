@@ -160,9 +160,13 @@ router.post("/", async (req, res) => {
         conteudo,
         imagemUrl,
         autor,
-        categoria_id,
-        cliente_id,
-        status: "pendente"
+        status: "pendente",
+        categoria: {
+          connect: { id: categoria_id }
+        },
+        cliente: {
+          connect: { id: cliente_id }
+        }
       }
     })
     res.status(201).json(novaNoticia)

@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client"
+import { PrismaClient, Prisma } from "@prisma/client"
 import { Router } from "express"
 
 const prisma = new PrismaClient()
@@ -47,15 +47,17 @@ router.get("/stats", async (req, res) => {
     const seteDiasAtras = new Date()
     seteDiasAtras.setDate(seteDiasAtras.getDate() - 7)
 
-    const interacoesPorDia = await prisma.$queryRaw`
-      SELECT 
-        DATE_TRUNC('day', data) as dia,
-        COUNT(*) as total
-      FROM "Interacao"
-      WHERE data >= ${seteDiasAtras}
-      GROUP BY DATE_TRUNC('day', data)
-      ORDER BY dia ASC
-    `
+    const interacoesPorDia = await prisma.$queryRaw<Array<{ dia: Date; total: bigint }>>(
+      Prisma.sql`
+        SELECT 
+          DATE_TRUNC('day', data)::date as dia,
+          COUNT(*)::int as total
+        FROM "Interacao"
+        WHERE data >= ${seteDiasAtras}::timestamp
+        GROUP BY DATE_TRUNC('day', data)
+        ORDER BY dia ASC
+      `
+    )
 
     res.status(200).json({
       totalNoticias,
@@ -71,11 +73,17 @@ router.get("/stats", async (req, res) => {
         total: cat._count.noticias
       })),
       noticiasRecentes,
-      interacoesPorDia
+      interacoesPorDia: interacoesPorDia.map(item => ({
+        dia: item.dia,
+        total: Number(item.total)
+      }))
     })
   } catch (error) {
     console.error("Erro ao buscar estatísticas:", error)
-    res.status(500).json({ erro: error })
+    res.status(500).json({ 
+      erro: "Erro ao buscar estatísticas",
+      mensagem: error instanceof Error ? error.message : "Erro desconhecido"
+    })
   }
 })
 

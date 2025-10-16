@@ -1,0 +1,61 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Cliente {
+  id          String      @id @default(uuid())
+  nome        String
+  email       String      @unique
+  senha       String
+  telefone    String
+  cidade      String
+  admin       Boolean     @default(false) // Campo para definir admin
+  interacoes  Interacao[]
+  noticias    Noticia[]   // Notícias criadas pelo cliente
+}
+
+model Categoria {
+  id       Int       @id @default(autoincrement())
+  nome     String    @unique
+  noticias Noticia[]
+}
+
+model Noticia {
+  id             Int      @id @default(autoincrement())
+  titulo         String
+  resumo         String
+  conteudo       String
+  imagemUrl      String
+  autor          String
+  dataPublicacao DateTime @default(now())
+  visualizacoes  Int      @default(0)
+  curtidas       Int      @default(0)
+  status         String   @default("pendente") // "pendente", "aprovada", "rejeitada"
+  motivo_rejeicao String? // Motivo da rejeição (se rejeitada)
+  categoria_id   Int
+  cliente_id     String   // Quem criou a notícia
+  categoria      Categoria @relation(fields: [categoria_id], references: [id])
+  cliente        Cliente   @relation(fields: [cliente_id], references: [id])
+  interacoes     Interacao[]
+}
+
+model Interacao {
+  id         Int      @id @default(autoincrement())
+  tipo       String   
+  conteudo   String?  
+  nota       Int?     
+  data       DateTime @default(now())
+  cliente_id String
+  noticia_id Int
+  cliente    Cliente  @relation(fields: [cliente_id], references: [id])
+  noticia    Noticia  @relation(fields: [noticia_id], references: [id], onDelete: Cascade)
+  resposta   String?  
+}

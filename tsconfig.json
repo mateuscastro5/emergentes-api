@@ -1,0 +1,14 @@
+{
+    "compilerOptions": {
+      "target": "ES2020",              // versão do JS que será gerada
+      "module": "CommonJS",            // formato usado pelo Node
+      "rootDir": ".",                  // pasta base onde estão teus .ts
+      "outDir": "dist",                // onde o JS compilado será salvo
+      "strict": true,                  // checagens mais seguras
+      "esModuleInterop": true,         // permite importar libs tipo express, bcrypt, etc.
+      "skipLibCheck": true             // ignora checagem de tipos nas dependências
+    },
+    "include": ["**/*.ts"],            // inclui todos os .ts
+    "exclude": ["node_modules", "dist"] // evita recompilar dependências
+  }
+  

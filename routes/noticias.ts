@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client"
+import { Prisma, PrismaClient } from "@prisma/client"
 import { Router } from "express"
 import { z } from "zod"
 
@@ -165,7 +165,7 @@ router.post("/", async (req, res) => {
         cliente: {
           connect: { id: validacao.data.cliente_id }
         }
-      }
+      } as unknown as Prisma.NoticiaUncheckedCreateInput
     })
     res.status(201).json(novaNoticia)
   } catch (error) {

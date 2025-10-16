@@ -49,11 +49,11 @@ router.get("/stats", async (req, res) => {
 
     const interacoesPorDia = await prisma.$queryRaw`
       SELECT 
-        DATE(data) as dia,
+        DATE_TRUNC('day', data) as dia,
         COUNT(*) as total
       FROM "Interacao"
       WHERE data >= ${seteDiasAtras}
-      GROUP BY DATE(data)
+      GROUP BY DATE_TRUNC('day', data)
       ORDER BY dia ASC
     `
 
